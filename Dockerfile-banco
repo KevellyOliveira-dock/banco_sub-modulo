@@ -1,0 +1,42 @@
+FROM mcr.microsoft.com/mssql/server:2022-latest
+
+USER root
+
+ENV ACCEPT_EULA=Y
+ENV SA_PASSWORD=A!ntegr@ti0n_DB4241
+ENV MSSQL_PID=Developer
+
+# Atualiza a lista de pacotes do APT(gerenciador de pacotes do Debian/Ubuntu)garante que o apt conheça os pacotes mais recentes.
+RUN apt-get update && \
+
+# curl: ferramenta para fazer requisições HTTP/HTTPS. gnupg: necessário para manipular chaves GPG (criptografia e verificação de assinatura).
+    apt-get install -y curl gnupg && \
+
+# curl: baixa a chave pública da Microsoft. apt-key add -: adiciona essa chave ao sistema de chaves do APT.
+    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+
+# Baixa o repositório da Microsoft para Debian 11. Ele é salvo em /etc/apt/sources.list.d/, onde ficam os repositórios adicionais do sistema.
+    curl https://packages.microsoft.com/config/debian/11/prod.list -o /etc/apt/sources.list.d/mssql-release.list && \
+
+# Atualiza novamente a lista de pacotes do APT, dessa vez incluindo o novo repositório da Microsoft que acabamos de adicionar.
+    apt-get update && \
+
+# ACCEPT_EULA=Y: aceita automaticamente o contrato de licença da Microsoft
+# Instala o mssql-tools: é o pacote da Microsoft que inclui ferramentas de linha de comando para trabalhar com o SQL Server.
+    ACCEPT_EULA=Y apt-get install -y mssql-tools && \
+
+# faz com que o comando sqlcmd funcione diretamente em qualquer terminal dentro do container, sem precisar digitar o caminho completo.
+    ln -s /opt/mssql-tools/bin/sqlcmd /usr/bin/sqlcmd && \
+
+# Remove os arquivos de cache dos repositórios APT. Isso é feito para reduzir o tamanho final da imagem Docker
+    rm -rf /var/lib/apt/lists/*
+
+COPY PIER_BASE_CONTAINER.bak /var/opt/mssql/backup/PIER_BASE_CONTAINER.bak
+COPY EMISSOR_BASE_CONTAINER.bak /var/opt/mssql/backup/EMISSOR_BASE_CONTAINER.bak
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+USER mssql
+
+CMD ["bash", "/entrypoint.sh"]
