@@ -51,7 +51,7 @@ WITH
 
 
 # Ele espera até que o banco fique ONLINE. Assim que a condição for verdadeira (ONLINE aparece), o loop para.
-echo "Esperando EMISSOR_BASE_CONTAINER ficar online..."
+echo "Esperando PIER_BASE_CONTAINER ficar online..."
 until /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'A!ntegr@ti0n_DB4241' -Q "
 SELECT state_desc FROM sys.databases WHERE name = 'PIER_BASE_CONTAINER'
 " | grep -q "ONLINE";
