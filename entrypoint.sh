@@ -8,7 +8,7 @@ until /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'A!ntegr@ti0n_DB4241' -Q
   sleep 1
 done
 
-echo "Restaurando bases..."
+echo "Restaurando bases... "
 
 /opt/mssql-tools/bin/sqlcmd -b -S localhost -U SA -P 'A!ntegr@ti0n_DB4241' -Q "
 -- Restaura o banco PIER_BASE_CONTAINER
