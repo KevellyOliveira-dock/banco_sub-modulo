@@ -19,7 +19,6 @@ COPY PIER_BASE_CONTAINER.bak /var/opt/mssql/backup/PIER_BASE_CONTAINER.bak
 COPY EMISSOR_BASE_CONTAINER.bak /var/opt/mssql/backup/EMISSOR_BASE_CONTAINER.bak
 
 COPY entrypoint.sh /entrypoint.sh
-RUN sed -i 's/\r$//' /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 
